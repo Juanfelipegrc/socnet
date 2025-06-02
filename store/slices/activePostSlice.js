@@ -19,7 +19,6 @@ export const activePostSlice = createSlice({
         comments: 0,
         isLiked: false,
         isBookmarked: false,
-        lastPath: '',
         actualUserPicture: '',
     },
     reducers: {
@@ -36,13 +35,33 @@ export const activePostSlice = createSlice({
            state.comments = payload.comments;
            state.isLiked = payload.isLiked;
            state.isBookmarked = payload.isBookmarked;
-           state.lastPath = payload.lastPath;
+           state.lastPathHistory = payload.lastPathHistory;
            state.actualUserPicture = payload.actualUserPicture;
         },
+
+        cleanActivePost: (state) => {
+            state.author = {
+                _id: '',
+                username: '',
+                image: '',
+            };
+            state._id = '';
+            state._creationTime = '';
+            state.userId = '';
+            state.imageUrl = '';
+            state.storageId = '';
+            state.caption = '';
+            state.likes = 0;;
+            state.comments = 0;;
+            state.isLiked = false;;
+            state.isBookmarked = false;
+            state.lastPathHistory = [];
+            state.actualUserPicture = '';
+        }
 
 
     }
 });
 
 
-export const { setActivePost } = activePostSlice.actions;
+export const { setActivePost, cleanActivePost } = activePostSlice.actions;

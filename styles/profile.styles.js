@@ -21,6 +21,13 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
+    headerMainSectionActiveUser: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap:10,
+        justifyContent: 'flex-start',
+        alignItems: 'center'
+    },  
     headerFirstSection: {
         display: 'flex',
         flexDirection: 'row',
@@ -116,13 +123,24 @@ export const styles = StyleSheet.create({
     },
     headerThirdSection: {
         display: 'flex',
+        flexDirection: 'row',
+        gap: 10,
         width: '100%'
     },
     editProfileButton: {
         paddingVertical: 8,
         paddingHorizontal:10,
-        width: '100%',
+        flexGrow: 1,
         backgroundColor: COLORS.blue,
+        borderRadius: 10
+    },
+    messageProfileButton: {
+        paddingVertical: 8,
+        paddingHorizontal:10,
+        flexGrow: 1,
+        backgroundColor: COLORS.secondary,
+        borderWidth: 1,
+        borderColor: '#e4e4e447',
         borderRadius: 10
     },
     editProfileButtonText: {
@@ -143,7 +161,6 @@ export const styles = StyleSheet.create({
         aspectRatio: 1, 
     },
     modalContainer: {
-
         flex: 1,
         backgroundColor: COLORS.secondary,
     },

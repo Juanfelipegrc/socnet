@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { styles } from '../../styles/create.styles'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../../constants/theme'
@@ -24,6 +24,7 @@ export default function Create() {
     const router = useRouter();
 
     const blurhash = 'L6Pj0^i_.AyE_3t7t7R**0o#DgR4';
+
 
     const pickImage = async() => {
         const result = await ImagePicker.launchImageLibraryAsync({

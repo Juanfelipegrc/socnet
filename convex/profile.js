@@ -1,4 +1,5 @@
-import { query } from "./_generated/server";
+import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 import { getAuthenticatedUser } from "./users";
 
 
@@ -8,10 +9,8 @@ export const getActualUser = query({
 
         try {
             if(ctx === undefined) return;
-            console.log('SE EJECUTAAAAAAAAAAAAAA')
             const currentUser = await getAuthenticatedUser(ctx);
 
-            console.log({CURRENTUSERFROMACTUAL:currentUser})
 
             return currentUser
         } catch (error) {
@@ -21,15 +20,29 @@ export const getActualUser = query({
 });
 
 
+export const getUserById = query({
+    args: {
+        userId: v.string(),
+    },
+    handler: async(ctx, args) => {
+        const user = await ctx.db.query('users').withIndex('by_id', (q) => q.eq('_id', args.userId)).first();
 
-export const getPostByCurrentUser = query({
-    handler: async(ctx) => {
+        return {
+            ...user,
+        }
+    }
+})
 
-        const currentUser = await getAuthenticatedUser(ctx);
+export const getPostsByUser = query({
+    args: {
+        userId: v.string(),
+    },
+    handler: async(ctx, args) => {
+
+  
 
 
-
-        const posts = await ctx.db.query('posts').withIndex('by_user', (q) => q.eq('userId', currentUser._id)).order('desc').collect();
+        const posts = await ctx.db.query('posts').withIndex('by_user', (q) => q.eq('userId', args.userId)).order('desc').collect();
 
         const postsWithInfo = await Promise.all(
             posts?.map(async(post) => {
@@ -38,11 +51,11 @@ export const getPostByCurrentUser = query({
 
 
                 
-                const like = await ctx.db.query('likes').withIndex('by_user_and_post', (q) => q.eq('userId', currentUser._id).eq('postId', post._id)).first();
+                const like = await ctx.db.query('likes').withIndex('by_user_and_post', (q) => q.eq('userId', args.userId).eq('postId', post._id)).first();
 
-                const bookmark = await ctx.db.query('bookmarks').withIndex('by_user_and_post', (q) => q.eq('userId' ,currentUser._id).eq('postId', post._id)).first();
+                const bookmark = await ctx.db.query('bookmarks').withIndex('by_user_and_post', (q) => q.eq('userId' ,args.userId).eq('postId', post._id)).first();
 
-                const actualUser = await ctx.db.query('users').withIndex('by_id', (q) => q.eq('_id', currentUser._id)).first();
+                const actualUser = await ctx.db.query('users').withIndex('by_id', (q) => q.eq('_id', args.userId)).first();
 
                 return {
                     ...post,
@@ -58,6 +71,74 @@ export const getPostByCurrentUser = query({
             })
         );
 
+
         return postsWithInfo;
+    }
+});
+
+
+export const validateIsFollowing = query({
+    args: {
+        userId: v.string(),
+    },
+    handler: async(ctx, args) => {
+        const currentUser = await getAuthenticatedUser(ctx);
+
+        const isFollowing = await ctx.db.query('follows').withIndex('by_both', (q) => q.eq('followerId', currentUser?._id).eq('followingId', args.userId)).first();
+
+        
+        if(isFollowing){
+            return true;
+        } else {
+            return false;
+        }
+    }
+})
+
+export const toggleFollowUser = mutation({
+    args: {
+        userId: v.string(),
+    },
+    handler: async(ctx, args) => {
+        const currentUser = await getAuthenticatedUser(ctx);
+
+        
+
+        const userToFollow = await ctx.db.query('users').withIndex('by_id', (q) => q.eq('_id', args.userId)).first();
+
+        const isFollowing = await ctx.db.query('follows').withIndex('by_both', (q) => q.eq('followerId', currentUser?._id).eq('followingId', args.userId)).first();
+
+        const thereIsNotificaiton = await ctx.db.query('notifications').withIndex('by_receiver_sender_and_type', (q) => q.eq('receiverId', args.userId).eq('senderId', currentUser?._id).eq('type', 'follow')).first();
+
+        if(isFollowing){
+
+            await ctx.db.delete(isFollowing?._id);
+            await ctx.db.delete(thereIsNotificaiton?._id);
+            await ctx.db.patch(args.userId, {
+                followers: userToFollow.followers - 1,
+            })
+            await ctx.db.patch(currentUser?._id, {
+                following: currentUser?.following - 1,
+            })
+
+            return false;
+        } else {
+            await ctx.db.insert('follows', {
+                followingId: args.userId,
+                followerId: currentUser?._id,
+            });
+            await ctx.db.insert('notifications', {
+                receiverId: args.userId,
+                senderId: currentUser._id,
+                type: 'follow',
+            })
+            await ctx.db.patch(args.userId, {
+                followers: userToFollow.followers + 1,
+            })
+            await ctx.db.patch(currentUser?._id, {
+                following: currentUser?.following + 1,
+            })
+            return true;
+        }
     }
 })

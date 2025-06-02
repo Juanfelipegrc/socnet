@@ -36,7 +36,7 @@ export default defineSchema({
     comments: defineTable({
         userId: v.id('users'),
         postId: v.id('posts'),
-        content: v.string(),
+        comment: v.string(),
     }).index('by_post', ['postId']),
 
     follows: defineTable({
@@ -56,6 +56,7 @@ export default defineSchema({
         content: v.optional(v.string()),
     })
         .index('by_receiver', ['receiverId'])
+        .index('by_receiver_sender_and_type', ['receiverId', 'senderId', 'type'])
         .index('by_receiver_and_post', ['receiverId', 'postId']),
 
     bookmarks: defineTable({

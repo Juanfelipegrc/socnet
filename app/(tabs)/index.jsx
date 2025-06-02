@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, FlatList } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { styles } from '../../styles/feed.styles'
 import { useAuth } from '@clerk/clerk-expo'
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +11,8 @@ import { Loader } from '../../components/Loader';
 import { Post } from '../../components/Post';
 import { StoriesSection } from '../../components/StoriesSection';
 import { HomeHeader } from '../../components/HomeHeader';
+import { useRoute } from '@react-navigation/native';
+
 
 
 export default function Index() {
@@ -20,8 +22,8 @@ export default function Index() {
 
   const queryResult = useQuery(api.posts.getFeedPosts);
   
-  
-  console.log({POSTS:queryResult?.posts})
+
+      
 
 
   useEffect(() => {
@@ -31,6 +33,8 @@ export default function Index() {
     }, 3000);
 
   }, [queryResult?.problem]);
+  
+
   
 
   return (

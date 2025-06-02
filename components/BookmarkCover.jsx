@@ -3,10 +3,12 @@ import { TouchableOpacity, View } from 'react-native';
 import { styles } from '../styles/bookmarks.styles';
 import { Image } from 'expo-image';
 import { useActivePost } from '../hooks/useActivePost';
+import { usePathname } from 'expo-router';
 
 export const BookmarkCover = ({post}) => {
 
     const {onSetActivePost} = useActivePost();
+    const actualPath = usePathname();
 
 
     
@@ -14,7 +16,7 @@ export const BookmarkCover = ({post}) => {
     return (
         <TouchableOpacity 
             style={styles.bookmark}
-            onPress={() => onSetActivePost(post, 'bookmarks')}
+            onPress={() => onSetActivePost(post, [actualPath])}
         >
             <Image
                 source={post.imageUrl}

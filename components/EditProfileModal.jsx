@@ -1,13 +1,31 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Keyboard, Platform } from 'react-native';
 import { Text, View, KeyboardAvoidingView, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
 import { styles } from '../styles/profile.styles';
 import { COLORS } from '../constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export const EditProfileModal = ({userActiveState, isEditingProfile, onSetIsEditingProfile, }) => {
+export const EditProfileModal = ({userActualState, isEditingProfile, onSetIsEditingProfile, }) => {
+
+    const [hasOpened, setHasOpened] = useState(false);
+    const [paddingIOS, setPaddingIOS] = useState(true);
+
+
+    useEffect(() => {
+    
+        if(isEditingProfile && !hasOpened){
+            setHasOpened(true)
+        } else if(isEditingProfile && hasOpened) {
+            setPaddingIOS(false);
+        }
+
+    }, [isEditingProfile]);
+    
+
+
+    
     return (
         <Modal
             visible={isEditingProfile}
@@ -21,7 +39,7 @@ export const EditProfileModal = ({userActiveState, isEditingProfile, onSetIsEdit
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                         style={styles.modalContainer}
                     >
-                        <View style={styles.modalContent}>
+                        <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? paddingIOS? 20 : 0 : 0 }}>
                             <View style={styles.modalHeader}>
                                 <TouchableOpacity
                                     style={styles.closeModalButton}
@@ -42,7 +60,7 @@ export const EditProfileModal = ({userActiveState, isEditingProfile, onSetIsEdit
 
                             <View style={styles.modalFirstSection}>
                                 <Image
-                                    source={userActiveState?.image}
+                                    source={userActualState?.image}
                                     style={styles.modalProfilePicture}
                                 />
                                 <TouchableOpacity 
@@ -68,12 +86,12 @@ export const EditProfileModal = ({userActiveState, isEditingProfile, onSetIsEdit
                                 <View style={styles.modalValuesContainer}>
                                     <TextInput
                                         placeholder='Name'
-                                        value={userActiveState?.fullname}
+                                        value={userActualState?.fullname}
                                         style={styles.modalValueItem}
                                     />
                                     <TextInput
                                         placeholder='Username'
-                                        value={userActiveState?.username}
+                                        value={userActualState?.username}
                                         style={styles.modalValueItem}
                                     />
                                     <TextInput
@@ -83,7 +101,7 @@ export const EditProfileModal = ({userActiveState, isEditingProfile, onSetIsEdit
                                     />
                                     <TextInput
                                         placeholder='Bio'
-                                        value={userActiveState?.bio}
+                                        value={userActualState?.bio}
                                         style={styles.modalValueItem}
                                     />
                                     <TextInput

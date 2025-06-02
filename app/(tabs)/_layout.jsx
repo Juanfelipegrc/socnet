@@ -5,6 +5,8 @@ import { Text, View } from 'react-native';
 import { COLORS } from '../../constants/theme';
 
 export default function TabLayout() {
+
+    
     return (
         <Tabs
             screenOptions={{

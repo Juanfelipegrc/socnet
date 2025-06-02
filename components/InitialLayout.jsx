@@ -1,9 +1,9 @@
 import { useAuth } from '@clerk/clerk-expo';
-import { Stack, useRouter, useSegments } from 'expo-router';
-import React, { useEffect } from 'react';
+import { Stack, usePathname, useRouter, useSegments } from 'expo-router';
+import React, { useCallback, useEffect } from 'react';
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import {useActiveUser} from '../hooks/useActiveUser';
+import {useUserActual} from '../hooks/useUserActual';
 
 
 export const InitialLayout = () => {
@@ -13,14 +13,15 @@ export const InitialLayout = () => {
     const segments = useSegments();
     const router = useRouter();
 
-    const {onSetActiveUser} = useActiveUser();
+    const {onSetActualUser} = useUserActual();
+
     const actualUser = useQuery(api.profile.getActualUser);
     
 
     useEffect(() => {
         if(!actualUser) return;
-        onSetActiveUser(actualUser);
-    }, [actualUser])
+        onSetActualUser(actualUser);
+    }, [actualUser]);
 
 
     useEffect(() => {

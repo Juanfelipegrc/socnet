@@ -49,7 +49,7 @@ export const getBookmarkedPosts = query({
 
                 const actualUser = await ctx.db.query('users').withIndex('by_id', (q) => q.eq('_id', currentUser._id)).first();
 
-                console.log({BOOKMARKED: bookmarked})
+      
 
                 
                 return {

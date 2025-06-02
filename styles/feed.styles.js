@@ -217,6 +217,7 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         padding: 20,
+        zIndex: 9999,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -237,7 +238,49 @@ export const styles = StyleSheet.create({
         height: 54,
         borderRadius: 50,
         aspectRatio: 1,
+    },
+    commentContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 20,
+        width: width,
+        padding: 15,
+    },
+    commentPicture: {
+        width: 40,
+        height: 40,
+        aspectRatio: 1,
+        borderRadius: 50,
+
+    },
+    commentLeftSection: {
+        display: 'flex',
+        width: '80%',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+    },
+    commentUsername: {
+        fontSize: 11,
+        color: COLORS.primary,
+        fontWeight: 600,
+    },
+    commentText: {
+        fontSize: 14,
+        color: COLORS.primary,
+        fontWeight: 400,
+
+    },
+    commentsModalTitle: {
+        fontSize: 16,
+        color: COLORS.primary,
+        fontWeight: 600,
+        textAlign: 'center',
+        paddingVertical: 20,
     }
+    
 
 
 })

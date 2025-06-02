@@ -1,5 +1,5 @@
 import { View, Text, FlatList } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { styles } from '../../styles/bookmarks.styles'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
@@ -15,15 +15,16 @@ export default function Bookmarks() {
 
   const {onSetBookmarks, posts} = usePosts();
   
+
   
   useEffect(() => {
     if(bookmarkedPosts === undefined) return;
     onSetBookmarks(bookmarkedPosts);
   },[bookmarkedPosts]);
+
   
-  console.log({BOOKMARKS:
-    posts.bookmarks
-  })
+  
+
 
   if(bookmarkedPosts?.length === 0) return (
 

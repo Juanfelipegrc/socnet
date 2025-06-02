@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 
-export const userActiveSlice = createSlice({
-    name: 'userActiveSlice',
+export const userActualSlice = createSlice({
+    name: 'userActualSlice',
     initialState: {
         username: '',
         fullname: '',
@@ -13,10 +13,11 @@ export const userActiveSlice = createSlice({
         following: 0,
         posts: 0,
         clerkId: '',
+        _id: '',
     },
     reducers: {
         
-        setActiveUser: (state, {payload}) => {
+        setActualUser: (state, {payload}) => {
            state.username = payload.username;
            state.fullname = payload.fullname;
            state.image = payload.image;
@@ -26,9 +27,10 @@ export const userActiveSlice = createSlice({
            state.following = payload.following;
            state.posts = payload.posts;
            state.clerkId = payload.clerkId;
+           state._id = payload._id;
         }
     }
 });
 
 
-export const { setActiveUser } = userActiveSlice.actions;
+export const { setActualUser } = userActualSlice.actions;

@@ -7,6 +7,7 @@ export const postsSlice = createSlice({
         posts: [],
         bookmarks: [],
         stories: [],
+        notifications: [],
     },
     reducers: {
         
@@ -19,9 +20,12 @@ export const postsSlice = createSlice({
         setStories: (state, {payload}) => {
             state.stories = payload
         },
+        setNotifications: (state, {payload}) => {
+            state.notifications = payload
+        },
 
     }
 });
 
 
-export const { setPosts, setBookmarks, setStories } = postsSlice.actions;
+export const { setPosts, setBookmarks, setStories, setNotifications } = postsSlice.actions;

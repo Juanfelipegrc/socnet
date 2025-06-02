@@ -33,6 +33,15 @@ export const styles = StyleSheet.create({
         padding: 20
 
     },
+    imageContainer: {
+        width: '20%',
+    },
+    imageContainerPost: {
+        width: '30%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
     senderImage: {
         width: 54,
         height: 54,
@@ -47,6 +56,12 @@ export const styles = StyleSheet.create({
         aspectRatio: 1,
 
     },
+    notificationTextContainer: {
+        display: 'flex',
+        width: '50%',
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+    },
     notificationText: {
         fontSize: 13,
         color: COLORS.primary,
@@ -57,5 +72,23 @@ export const styles = StyleSheet.create({
         color: COLORS.primary,
         fontWeight: 700,
     },
+    followBackButtonContainer: {
+        width: '30%',
+        display: 'flex',
+        flexDirection: 'row'
+    },
+    followBackButton: {
+        paddingVertical: 8,
+        paddingHorizontal:10,
+        flexGrow: 1,
+        backgroundColor: COLORS.blue,
+        borderRadius: 10
+    },
+    followBackButtonText: {
+        color: COLORS.primary,
+        fontSize: 12,
+        fontWeight: 600,
+        textAlign: 'center'
+    }
     
 })

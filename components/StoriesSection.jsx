@@ -19,7 +19,6 @@ export const StoriesSection = () => {
     }, []);
     
 
-    console.log(stories)
     return (
          <ScrollView
             horizontal

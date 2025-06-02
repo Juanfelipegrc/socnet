@@ -86,7 +86,7 @@ export const getFeedPosts = query({
                 const actualUser = await ctx.db.query('users').withIndex('by_id', (q) => q.eq('_id', currentUser._id)).first();
 
 
-                console.log(currentUser)
+
                 
                 return {
                     ...post,
@@ -131,8 +131,11 @@ export const getIndividualPost = query({
 
         const bookmark = await ctx.db.query('bookmarks').withIndex('by_user_and_post', (q) => q.eq('userId' ,currentUser._id).eq('postId', post._id)).first();
 
+        const actualUser = await ctx.db.query('users').withIndex('by_id', (q) => q.eq('_id', currentUser._id)).first();
+
         return {
             ...post,
+            actualUserPicture: actualUser.image,
             author: {
                 _id: postAuthor?._id,
                 username: postAuthor?.username,

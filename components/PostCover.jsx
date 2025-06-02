@@ -3,9 +3,10 @@ import React from 'react';
 import { styles } from '../styles/profile.styles';
 import { TouchableOpacity, View } from 'react-native';
 import { useActivePost } from '../hooks/useActivePost';
+import { useActiveUser } from '../hooks/useActiveUser';
 import { usePathname } from 'expo-router';
 
-export const OwnPostCover = ({post}) => {
+export const PostCover = ({post}) => {
 
     const {onSetActivePost} = useActivePost();
     const actualPath = usePathname();
@@ -16,7 +17,7 @@ export const OwnPostCover = ({post}) => {
     return (
         <TouchableOpacity 
             style={styles.ownPostCover}
-            onPress={() => onSetActivePost(post, [actualPath])}
+            onPress={() => onSetActivePost(post)}
         >
             <Image
                 source={post.imageUrl}
@@ -27,3 +28,8 @@ export const OwnPostCover = ({post}) => {
         </TouchableOpacity>
     );
 };
+
+
+
+
+

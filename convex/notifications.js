@@ -12,13 +12,19 @@ export const getNotifications = query({
 
             notifications?.map(async(notification) => {
                 const sender = await ctx.db.query('users').withIndex('by_id', (q) => q.eq('_id', notification.senderId)).first();
-                const post = await ctx.db.query('posts').withIndex('by_id', (q) => q.eq('_id', notification.postId)).first();
+
+                let post = null;
+
+                if(notification.type === 'like'){
+                    post = await ctx.db.query('posts').withIndex('by_id', (q) => q.eq('_id', notification.postId)).first();
+
+                }
 
                 return {
                     ...notification,
                     senderImage: sender.image,
                     senderUsername: sender.username,
-                    postImage: post.imageUrl
+                    postImage: post?.imageUrl
                 }
             })
         );

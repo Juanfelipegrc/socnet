@@ -5,28 +5,33 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants/theme';
 import { api } from '../convex/_generated/api';
-import { useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { TapGestureHandler } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 import { CommentsModal } from './CommentsModal';
+import { useActiveUser } from '../hooks/useActiveUser';
+import { usePathname } from 'expo-router';
+
 
 
 
 export const Post = ({post}) => {
 
+
     const [isBookmarked, setIsBookmarked] = useState(post?.isBookmarked);
     const [isLiked, setIsLiked] = useState({isLiked: post?.isLiked, likesNum: post?.likes});
+    const [commentsModalIsOpen, setCommentsModalIsOpen] = useState(false);
+    const {onSetActiveUser, activeUserState} = useActiveUser();
 
 
-
-    console.log({BOOKMARKUSERACTUAL:post?.actualUserPicture})
-    
-
+    const userPosts = useQuery(api.profile.getPostsByUser, post?.author?._id? {userId: post?.author?._id} : 'skip');
+    const userAuthor = useQuery(api.profile.getUserById, post?.author?._id? {userId: post?.author?._id} : 'skip');
+    const comments = useQuery(api.comments.getComments, post?._id?  {postId: post?._id} : 'skip');
     const toggleBookmark = useMutation(api.bookmarks.toggleBookmark);
     const toggleLike = useMutation(api.likes.toggleLike);
     const addLikeWithDoubleTap = useMutation(api.likes.addLikeWithDoubleTap);
-    const [commentsModalIsOpen, setCommentsModalIsOpen] = useState(false);
 
+    
     const scale = useSharedValue(0);
     const opacity = useSharedValue(0);
     const blurhash = 'L0000000?^000000000000000000';
@@ -34,11 +39,17 @@ export const Post = ({post}) => {
     const onSetCommentsModal = (value) => {
         setCommentsModalIsOpen(value);
     };
+
+
+    const onSetActiveUserProfile = () => {
+        onSetActiveUser({...userAuthor, postsList: userPosts})
+    }
+
     
     const getTimeDifference = () => {
         const actualData = Date.now();
         
-        const actualDifference = actualData - post._creationTime;
+        const actualDifference = actualData - post?._creationTime;
         
         const seconds = Math.floor(actualDifference / 1000);
         const minutes = Math.floor(seconds / 60);
@@ -124,6 +135,10 @@ export const Post = ({post}) => {
         setIsBookmarked(post?.isBookmarked);
     
       }, [post?.isBookmarked]);
+
+
+
+      
     
     
       useEffect(() => {
@@ -189,7 +204,12 @@ export const Post = ({post}) => {
                         placeholder={{blurhash}}
                         transition={70}
                     />
-                    <Text style={styles.postUsername}>{post?.author?.username}</Text>
+                    <TouchableOpacity
+                        style={{paddingVertical: 10}}
+                        onPress={onSetActiveUserProfile}
+                    >
+                        <Text style={styles.postUsername}>{post?.author?.username}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -203,6 +223,7 @@ export const Post = ({post}) => {
                     style={styles.postImageContainer}
                 >
                     <Image
+                        key={post?._id}
                         source={post?.imageUrl}
                         style={styles.postImage}
                         placeholder={{blurhash}}
@@ -239,18 +260,22 @@ export const Post = ({post}) => {
                                 size={33}
                                 color={!isLiked.isLiked? COLORS.primary : COLORS.red}
                             />
-                        {
-                            isLiked.likesNum !== 0 && <Text style={styles.actionsNums}>{isLiked.likesNum}</Text>
-                        }
+                            {
+                                isLiked.likesNum !== 0 && <Text style={styles.actionsNums}>{isLiked.likesNum}</Text>
+                            }
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => setCommentsModalIsOpen(true)}
+                            style={styles.action}
                         >
                             <Ionicons
                                 name='chatbubble-outline'
                                 size={28}
                                 color={COLORS.primary}
                             />
+                            {
+                                comments?.length !== 0 && <Text style={styles.actionsNums}>{comments?.length}</Text>
+                            }
                         </TouchableOpacity>
                     </View>
 
@@ -262,6 +287,7 @@ export const Post = ({post}) => {
                             size={30}
                             color={COLORS.primary}
                         />
+                        
                     </TouchableOpacity>
                 </View>
 
@@ -279,9 +305,10 @@ export const Post = ({post}) => {
             <CommentsModal 
                 modalIsOpen={commentsModalIsOpen} 
                 onSetModal={onSetCommentsModal}
-                postUsername={post.author.username}
-                actualUserPicture={post.actualUserPicture}
-
+                postUsername={post?.author?.username}
+                actualUserPicture={post?.actualUserPicture}
+                postId={post?._id}
+                comments={comments}
             />
         </View>
     );
