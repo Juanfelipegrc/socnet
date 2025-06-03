@@ -38,13 +38,22 @@ export const useActivePost = () => {
         }
     }, [pathname, getPostById, dispatch]);
 
+
     useEffect(() => {
-      if(pathname.split('/')[1] !== 'post'){
-        setTimeout(() => {
-            onCleanActivePost();
-        }, 500);
-      }
-    }, [pathname])
+        let timeoutId;
+
+        if (pathname.split('/')[1] !== 'post') {
+            timeoutId = setTimeout(() => {
+            
+            if (pathname.split('/')[1] !== 'post') {
+                onCleanActivePost();
+            }
+            }, 500); 
+        }
+
+    return () => clearTimeout(timeoutId); 
+    }, [pathname]);
+
     
 
     return {

@@ -12,46 +12,35 @@ import { EditProfileModal } from './EditProfileModal';
 import { useActiveUser } from '../hooks/useActiveUser';
 import { usePathname, useRouter } from 'expo-router';
 import { useActivePost } from '../hooks/useActivePost';
-import {usePosts} from '../hooks/usePosts'
-import { useRoute } from '@react-navigation/native';
 
 export const ProfileHeader = () => {
 
-    const [isLoadingImage, setIsLoadingImage] = useState(true);
     const [isEditingProfile, setIsEditingProfile] = useState(false);
-    const [shouldDelete, setShouldDelete] = useState(false);
-    const [isActualUser, setIsActualUser] = useState(true);
-    const [activeUserSaved, setActiveUserSaved] = useState(null);
+    const [isActualUser, setIsActualUser] = useState(null);
 
 
-    const {onSetActiveUser, activeUserState, onCleanActiveUser} = useActiveUser();
-    const validationIsFollowing = useQuery(api.profile.validateIsFollowing, activeUserState?._id?.length !== 0? {userId: activeUserState?._id} : 'skip');
+    const {activeUserState, onCleanActiveUser} = useActiveUser();
+    const activeUser = useQuery(api.profile.getUserById, activeUserState?._id? {userId: activeUserState?._id} : 'skip');
+    const actualUser = useQuery(api.profile.getActualUser);
+
+
+    const validationIsFollowing = useQuery(api.profile.validateIsFollowing, activeUser?._id? {userId: activeUser?._id} : 'skip');
+    const toggleFollowUser = useMutation(api.profile.toggleFollowUser);
+    
    
     const [isFollowing, setIsFollowing] = useState(validationIsFollowing);
-    const {onSetActualUser, userActualState} = useUserActual();
 
-    const toggleFollowUser = useMutation(api.profile.toggleFollowUser);
 
 
     const {onCleanActivePost} = useActivePost();
-    const {onCleanAllUserInfo} = usePosts();
-
-    const user = useQuery(api.profile.getActualUser);
     const {signOut} = useAuth();
-
     const router = useRouter();
     const pathname = usePathname();
+
 
     const blurhash = 'L0000000?^000000000000000000';
 
 
-
-
-
-
-    const handleLoad = () => {
-        setIsLoadingImage(false);
-    };
 
     const onSetEditingProfile = (value) => {
         setIsEditingProfile(value);
@@ -62,67 +51,50 @@ export const ProfileHeader = () => {
     
     }
 
+
     const onLogout = () => {
-        onCleanActiveUser();
-        onCleanActivePost();
-        onCleanAllUserInfo();
         signOut();
+        setTimeout(() => {
+            onCleanActiveUser();
+            onCleanActivePost();
+        }, 500);
     }
 
     const handleFollow = async() => {
 
-        if(activeUserState?._id?.length === 0) return;
-        if(activeUserState?._id === userActualState?._id) return;
-        const follow = await toggleFollowUser({userId: activeUserState?._id});
+        if(activeUser?._id?.length === 0) return;
+        if(activeUser?._id === actualUser?._id) return;
+        const follow = await toggleFollowUser({userId: activeUser?._id});
  
 
         setIsFollowing(follow);
  
-    }
+    };
+
+
+
+    useEffect(() => {
+        if(pathname === '/profile' || pathname.split('/')[1] === 'user-profile' && pathname.split('/')[2] === actualUser?._id){
+            setIsActualUser(true);
+        } else {
+            setTimeout(() => {
+                setIsActualUser(false);
+            }, 500);
+        }
+    }, [pathname]);
+
+
+    useEffect(() => {
+      setIsFollowing(validationIsFollowing)
+    }, [validationIsFollowing])
+    
+    
+
+    
 
 
  
 
-
-
-
-    useEffect(() => {
-      if(validationIsFollowing === undefined) return;
-      if(validationIsFollowing === isFollowing) return;
-
-      setIsFollowing(validationIsFollowing)
-    }, [validationIsFollowing])
-    
-
-    
-
-
-    
-
-
-    useEffect(() => {
-        if(activeUserState?._id?.length === 0) return;
-        if(activeUserState?._id !== userActualState?._id){
-            setIsActualUser(false);
-        }
-
-        setActiveUserSaved(activeUserState);
-    }, [activeUserState])
-    
-
-
-
-    useEffect(() => {
-        if(!activeUserSaved || activeUserState === activeUserSaved || activeUserState === undefined || isActualUser) return; 
-        onSetActiveUser(activeUserState, false);
-    }, [activeUserState]);
-    
-    
-    
-    useEffect(() => {
-        if(user === undefined) return;
-        onSetActualUser(user);
-    }, [user]);
 
 
     
@@ -145,7 +117,7 @@ export const ProfileHeader = () => {
                                 </TouchableOpacity>
                             )
                         }
-                        <Text style={styles.username}>{userActualState?.username}</Text>
+                        <Text style={styles.username}>{actualUser?.username}</Text>
                     </View>
 
 
@@ -164,9 +136,8 @@ export const ProfileHeader = () => {
     
                     <View style={styles.leftSectionContainer}>
                         <Image
-                            source={userActualState?.image}
+                            source={actualUser?.image}
                             style={styles.profilePicture}
-                            onLoad={handleLoad}
                             placeholder={{blurhash}}
                             transition={50}
                         />
@@ -174,18 +145,18 @@ export const ProfileHeader = () => {
     
                     <View style={styles.rightSectionContainer}>
                         <View style={styles.rightSection}>
-                            <Text style={styles.name}>{userActualState?.fullname}</Text>
+                            <Text style={styles.name}>{actualUser?.fullname}</Text>
                             <View style={styles.followsContainer}>
                                 <View style={styles.postNumContainer}>
-                                    <Text style={styles.stadisticNums}>{userActualState?.posts}</Text>
+                                    <Text style={styles.stadisticNums}>{actualUser?.posts}</Text>
                                     <Text style={styles.stadisticTitles}>posts</Text>
                                 </View>
                                 <View style={styles.followersContainer}>
-                                    <Text style={styles.stadisticNums}>{userActualState?.followers}</Text>
+                                    <Text style={styles.stadisticNums}>{actualUser?.followers}</Text>
                                     <Text style={styles.stadisticTitles}>followers</Text>
                                 </View>
                                 <View style={styles.followingContainer}>
-                                    <Text style={styles.stadisticNums}>{userActualState?.following}</Text>
+                                    <Text style={styles.stadisticNums}>{actualUser?.following}</Text>
                                     <Text style={styles.stadisticTitles}>following</Text>
                                 </View>
                             </View>
@@ -195,7 +166,7 @@ export const ProfileHeader = () => {
                 </View>
     
                 <View style={styles.headerSecondSection}>
-                    <Text style={styles.bioText}>{userActualState?.bio}</Text>
+                    <Text style={styles.bioText}>{actualUser?.bio}</Text>
                 </View>
     
                 <View style={styles.headerThirdSection}>
@@ -207,7 +178,7 @@ export const ProfileHeader = () => {
                     </TouchableOpacity>
                 </View>
     
-                <EditProfileModal isEditingProfile={isEditingProfile} onSetIsEditingProfile={onSetEditingProfile} userActualState={userActualState}/>
+                <EditProfileModal isEditingProfile={isEditingProfile} onSetIsEditingProfile={onSetEditingProfile} userActualState={actualUser}/>
                     
             </View>
         );
@@ -224,16 +195,16 @@ export const ProfileHeader = () => {
                         color={COLORS.primary}
                         />
                     </TouchableOpacity>
-                    <Text style={styles.username}>{activeUserState?.username}</Text>
+                    <Text style={styles.username}>{activeUser?.username}</Text>
                     
                 </View>
                 <View style={styles.headerFirstSection}>
     
                     <View style={styles.leftSectionContainer}>
                         <Image
-                            source={activeUserState?.image}
+                            source={activeUser?.image}
                             style={styles.profilePicture}
-                            onLoad={handleLoad}
+                
                             placeholder={{blurhash}}
                             transition={50}
                         />
@@ -241,18 +212,18 @@ export const ProfileHeader = () => {
     
                     <View style={styles.rightSectionContainer}>
                         <View style={styles.rightSection}>
-                            <Text style={styles.name}>{activeUserState?.fullname}</Text>
+                            <Text style={styles.name}>{activeUser?.fullname}</Text>
                             <View style={styles.followsContainer}>
                                 <View style={styles.postNumContainer}>
-                                    <Text style={styles.stadisticNums}>{activeUserState?.posts}</Text>
+                                    <Text style={styles.stadisticNums}>{activeUser?.posts}</Text>
                                     <Text style={styles.stadisticTitles}>posts</Text>
                                 </View>
                                 <View style={styles.followersContainer}>
-                                    <Text style={styles.stadisticNums}>{activeUserState?.followers}</Text>
+                                    <Text style={styles.stadisticNums}>{activeUser?.followers}</Text>
                                     <Text style={styles.stadisticTitles}>followers</Text>
                                 </View>
                                 <View style={styles.followingContainer}>
-                                    <Text style={styles.stadisticNums}>{activeUserState?.following}</Text>
+                                    <Text style={styles.stadisticNums}>{activeUser?.following}</Text>
                                     <Text style={styles.stadisticTitles}>following</Text>
                                 </View>
                             </View>
@@ -262,46 +233,52 @@ export const ProfileHeader = () => {
                 </View>
     
                 <View style={styles.headerSecondSection}>
-                    <Text style={styles.bioText}>{activeUserState?.bio}</Text>
+                    <Text style={styles.bioText}>{activeUser?.bio}</Text>
                 </View>
     
                 <View style={styles.headerThirdSection}>
-                    <Pressable
-                        onPress={() => {
-                            if(activeUserState?._id === userActualState?._id){
-                            setIsEditingProfile(true);
-                            } else {
-                            handleFollow();
+                    
+                            
+                            {
+                                isFollowing? (
+                                    <Pressable
+                                        onPress={handleFollow}
+                                        style={({ pressed }) => [
+                                            styles.messageProfileButton,
+                                            pressed && { opacity: 0.5 }
+                                        ]}
+                                    >
+                                        <Text style={styles.editProfileButtonText}>
+                                        {'Unfollow'}
+                                        </Text>
+                                    </Pressable>
+                                )
+                                :
+                                (
+                                    <Pressable
+                                        onPress={handleFollow}
+                                        style={({ pressed }) => [
+                                            styles.editProfileButton,
+                                            pressed && { opacity: 0.5 }
+                                        ]}
+                                    >
+                                        <Text style={styles.editProfileButtonText}>
+                                        {'Follow'}
+                                        </Text>
+                                    </Pressable>
+                                )
                             }
-                        }}
-                        style={({ pressed }) => [
-                            activeUserState?._id !== userActualState?._id && isFollowing
-                            ? styles.messageProfileButton
-                            : styles.editProfileButton,
-                            pressed && { opacity: 0.5 }
-                        ]}
-                        >
-                        <Text style={styles.editProfileButtonText}>
-                            {activeUserState?._id === userActualState?._id
-                            ? 'Edit Profile'
-                            : isFollowing
-                            ? 'Unfollow'
-                            : 'Follow'}
-                        </Text>
-                        </Pressable>
-                    {
-                        activeUserState?._id !== userActualState?._id && (
+                               
+                   
                             <TouchableOpacity
                                 style={styles.messageProfileButton}
                             >
                                 <Text style={styles.editProfileButtonText}>Message</Text>
                             </TouchableOpacity>
-                        )
-                    }
+                    
                 </View>
     
-                <EditProfileModal isEditingProfile={isEditingProfile} onSetIsEditingProfile={onSetEditingProfile} userActualState={userActualState}/>
-
+              
             </View>
         );
     }

@@ -22,9 +22,11 @@ export const getNotifications = query({
 
                 return {
                     ...notification,
-                    senderImage: sender.image,
-                    senderUsername: sender.username,
-                    postImage: post?.imageUrl
+                    senderImage: sender?.image,
+                    senderId: sender?._id,
+                    senderUsername: sender?.username,
+                    postImage: post?.imageUrl,
+                    postId: post?._id
                 }
             })
         );

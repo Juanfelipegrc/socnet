@@ -36,7 +36,10 @@ export default function PostDetails() {
             />
         </TouchableOpacity>
       </View>
-          <Stack.Screen options={{ title: 'Post' , headerShown: false, animation: 'slide_from_right'}} />
+          <Stack.Screen options={{ 
+              title: 'Post' , 
+              headerShown: false, 
+              animation: 'ios_from_right'}} />
           <Post post={post} />
       
     </View>

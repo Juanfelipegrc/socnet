@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { cleanActiveUser, setActiveUser } from "../store/slices/activeUserSlice";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 
 
 
@@ -10,14 +10,16 @@ export const useActiveUser = () => {
     const activeUserState = useSelector(state => state.activeUser);
     const dispatch = useDispatch();
     const router = useRouter();
+    const pathname = usePathname();
 
 
-    const onSetActiveUser = (user, shouldNavigate = true) => {
+    const onSetActiveUser = (id) => {
 
-        dispatch(setActiveUser({...user}));
 
-        if(!shouldNavigate) return;
-        router.push(`/user-profile/${user?._id}`);
+        dispatch(setActiveUser(id));
+
+
+        router.push(`/user-profile/${id}`);
     };
 
     const onCleanActiveUser = () => {

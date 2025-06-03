@@ -2,22 +2,18 @@ import { View, Text, TouchableOpacity, FlatList } from 'react-native'
 import React, { useCallback, useEffect } from 'react'
 import { styles } from '../../styles/feed.styles'
 import { useAuth } from '@clerk/clerk-expo'
-import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../constants/theme';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { NoPostsFound } from '../../components/NoPostsFound';
-import { Loader } from '../../components/Loader';
 import { Post } from '../../components/Post';
-import { StoriesSection } from '../../components/StoriesSection';
 import { HomeHeader } from '../../components/HomeHeader';
-import { useRoute } from '@react-navigation/native';
+
 
 
 
 export default function Index() {
 
-  const {isSignedIn} = useAuth();
+  const {isSignedIn, signOut} = useAuth();
 
 
   const queryResult = useQuery(api.posts.getFeedPosts);

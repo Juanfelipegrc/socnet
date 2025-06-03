@@ -42,7 +42,7 @@ export const Post = ({post}) => {
 
 
     const onSetActiveUserProfile = () => {
-        onSetActiveUser({...userAuthor, postsList: userPosts})
+        onSetActiveUser(userAuthor?._id)
     }
 
     

@@ -3,21 +3,12 @@ import { ScrollView } from 'react-native';
 import { styles } from '../styles/feed.styles';
 import { STORIES } from '../constants/storyUsers';
 import { Story } from './Story';
-import { usePosts } from '../hooks/usePosts';
 
 export const StoriesSection = () => {
 
-    const {onSetStories, stories} = usePosts();
 
-    useEffect(() => {
-        
-      if(STORIES === undefined) return;
 
-      if(stories?.length !== 0) return;
-      onSetStories(STORIES);
 
-    }, []);
-    
 
     return (
          <ScrollView
@@ -27,7 +18,7 @@ export const StoriesSection = () => {
             >
 
             {
-                stories?.map((story) => (
+                STORIES?.map((story) => (
                     <Story
                     story={story}
                     key={story.id}

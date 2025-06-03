@@ -6,22 +6,15 @@ import { api } from '../../convex/_generated/api'
 import { BookmarkCover } from '../../components/BookmarkCover'
 import { Loader } from '../../components/Loader'
 import { BookmarksHeader } from '../../components/BookmarksHeader'
-import { usePosts } from '../../hooks/usePosts'
 import { NoBookmarksFound } from '../../components/NoBookmarksFound'
 
 export default function Bookmarks() {
 
   const bookmarkedPosts = useQuery(api.bookmarks.getBookmarkedPosts);
 
-  const {onSetBookmarks, posts} = usePosts();
   
 
   
-  useEffect(() => {
-    if(bookmarkedPosts === undefined) return;
-    onSetBookmarks(bookmarkedPosts);
-  },[bookmarkedPosts]);
-
   
   
 
@@ -41,7 +34,7 @@ export default function Bookmarks() {
 
 
       <FlatList
-          data={posts.bookmarks}
+          data={bookmarkedPosts}
           renderItem={({item}) => <BookmarkCover key={item._id} post={item}/>}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={<BookmarksHeader/>}
