@@ -1,28 +1,16 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, Platform } from 'react-native';
-import { Text, View, KeyboardAvoidingView, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
+import { Text, View, KeyboardAvoidingView, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import { styles } from '../styles/profile.styles';
 import { COLORS } from '../constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export const EditProfileModal = ({userActualState, isEditingProfile, onSetIsEditingProfile, }) => {
-
-    const [hasOpened, setHasOpened] = useState(false);
-    const [paddingIOS, setPaddingIOS] = useState(true);
+export const EditProfileModal = ({userActualState, isEditingProfile,  onSetIsEditingProfile, }) => {
 
 
-    useEffect(() => {
-    
-        if(isEditingProfile && !hasOpened){
-            setHasOpened(true)
-        } else if(isEditingProfile && hasOpened) {
-            setPaddingIOS(false);
-        }
 
-    }, [isEditingProfile]);
-    
 
 
     
@@ -39,7 +27,7 @@ export const EditProfileModal = ({userActualState, isEditingProfile, onSetIsEdit
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                         style={styles.modalContainer}
                     >
-                        <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? paddingIOS? 20 : 0 : 0 }}>
+                        <View style={{ flex: 1}}>
                             <View style={styles.modalHeader}>
                                 <TouchableOpacity
                                     style={styles.closeModalButton}
@@ -71,62 +59,124 @@ export const EditProfileModal = ({userActualState, isEditingProfile, onSetIsEdit
                             </View>
 
                             <View style={styles.modalSecondSection}>
-                                <View style={styles.modalTitlesContainer}>
-                                    
-                                    <Text style={styles.modalTitleItem}>Name</Text>
-                                    <Text style={styles.modalTitleItem}>Username</Text>
-                                    <Text style={styles.modalTitleItem}>Pronous</Text>
-                                    <Text style={styles.modalTitleItem}>Bio</Text>
-                                    <Text style={styles.modalTitleItem}>Links</Text>
-                                    <Text style={styles.modalTitleItem}>Banners</Text>
-                                    <Text style={styles.modalTitleItem}>Music</Text>
-                                    <Text style={styles.modalTitleItem}>Gender</Text>
+                                
+                                <TouchableOpacity style={styles.userValueItem}>
+                                    <View style={styles.itemTitle}>
+                                        <Text style={styles.userItemText}>
+                                            Name
+                                        </Text>
+                                    </View>
+                                    <View style={styles.itemValue}>
+                                        <Text style={styles.userItemText}>
+                                            {userActualState?.fullname}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                                
+                                <TouchableOpacity style={styles.userValueItem}>
+                                    <View style={styles.itemTitle}>
+                                        <Text style={styles.userItemText}>
+                                            Username
+                                        </Text>
+                                    </View>
+                                    <View style={styles.itemValue}>
+                                        <Text style={styles.userItemText}>
+                                            {userActualState?.username}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
 
-                                </View>
-                                <View style={styles.modalValuesContainer}>
-                                    <TextInput
-                                        placeholder='Name'
-                                        value={userActualState?.fullname}
-                                        style={styles.modalValueItem}
-                                    />
-                                    <TextInput
-                                        placeholder='Username'
-                                        value={userActualState?.username}
-                                        style={styles.modalValueItem}
-                                    />
-                                    <TextInput
-                                        placeholder='Pronous'
-                                        value='Pronous'
-                                        style={styles.modalValueItem}
-                                    />
-                                    <TextInput
-                                        placeholder='Bio'
-                                        value={userActualState?.bio}
-                                        style={styles.modalValueItem}
-                                    />
-                                    <TextInput
-                                        placeholder='Links'
-                                        value='No links yet'
-                                        style={styles.modalValueItem}
-                                    />
-                                    <TextInput
-                                        placeholder='Banners'
-                                        value='No banners yet'
-                                        style={styles.modalValueItem}
-                                    />
-                                    <TextInput
-                                        placeholder='Music'
-                                        value='No music yet'
-                                        style={styles.modalValueItem}
-                                    />
-                                    <TextInput
-                                        placeholder='Gender'
-                                        value='No chosed yet'
-                                        style={styles.modalValueItem}
-                                    />
+                                <TouchableOpacity style={styles.userValueItem}>
+                                    <View style={styles.itemTitle}>
+                                        <Text style={styles.userItemText}>
+                                            Pronouns
+                                        </Text>
+                                    </View>
+                                    <View style={styles.itemValue}>
+                                        <Text style={styles.userItemText}>
+                                            Pronouns
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.userValueItem}>
+                                    <View style={styles.itemTitle}>
+                                        <Text style={styles.userItemText}>
+                                            Bio
+                                        </Text>
+                                    </View>
+                                    <View style={styles.itemValue}>
+                                        <Text style={styles.userItemText}>
+                                            {userActualState?.bio}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.userValueItem}>
+                                    <View style={styles.itemTitle}>
+                                        <Text style={styles.userItemText}>
+                                            Links
+                                        </Text>
+                                    </View>
+                                    <View style={styles.itemValue}>
+                                        <Text style={styles.userItemTextNoValue}>
+                                            Add links
+                                        </Text>
+                                        <MaterialIcons
+                                            name='arrow-forward-ios'
+                                            style={styles.arrowItem}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.userValueItem}>
+                                    <View style={styles.itemTitle}>
+                                        <Text style={styles.userItemText}>
+                                            Banners
+                                        </Text>
+                                    </View>
+                                    <View style={styles.itemValue}>
+                                        <Text style={styles.userItemTextNoValue}>
+                                            Add Banners
+                                        </Text>
+                                        <MaterialIcons
+                                            name='arrow-forward-ios'
+                                            style={styles.arrowItem}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.userValueItemWithBorder}>
+                                    <View style={styles.itemTitle}>
+                                        <Text style={styles.userItemText}>
+                                            Music
+                                        </Text>
+                                    </View>
+                                    <View style={styles.itemValueWithoutBorder}>
+                                        <Text style={styles.userItemTextNoValue}>
+                                            Add Music to your profile
+                                        </Text>
+                                        <MaterialIcons
+                                            name='arrow-forward-ios'
+                                            style={styles.arrowItem}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.userValueItemWithBorder}>
+                                    <View style={styles.itemTitle}>
+                                        <Text style={styles.userItemText}>
+                                            Gender
+                                        </Text>
+                                    </View>
+                                    <View style={styles.itemValueWithoutBorder}>
+                                        <Text style={styles.userItemText}>
+                                            Male
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
                                     
-                                </View>
-                            </View>
+                            </View>    
                         </View>
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>

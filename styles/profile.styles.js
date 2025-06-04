@@ -238,37 +238,69 @@ export const styles = StyleSheet.create({
     modalSecondSection: {
         display: 'flex',
         width: width,
-        gap: 10,
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         borderTopColor: '#e4e4e447',
         borderTopWidth: 0.2,
     },
-    modalTitlesContainer: {
+        userValueItem: {
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-around'
     },
-    modalTitleItem: {
-        fontSize: 17,
-        color: COLORS.primary,
-        fontWeight: 500,
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-    },
-    modalValuesContainer: {
+    userValueItemWithBorder: {
         display: 'flex',
-        flexGrow: 1,
-        flexDirection: 'column',
-    },
-    modalValueItem: {
-        fontSize: 17,
-        width: '95%',
-        color: COLORS.primary,
-        fontWeight: 400,
-        paddingVertical: 15,
-        paddingHorizontal: 20,
-        borderBottomColor: '#e4e4e447',
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-around',
         borderBottomWidth: 0.2,
+        borderBottomColor: '#e4e4e447',
     },
+    itemTitle: {
+        display: 'flex',
+        width: '30%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        paddingLeft: 25,
+        paddingVertical: 17,
+    },
+    itemValue: {
+        display: 'flex',
+        position: 'relative',
+        width: '70%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        borderBottomWidth: 0.2,
+        borderBottomColor: '#e4e4e447',
+        paddingVertical: 17,
+
+    },
+    itemValueWithoutBorder: {
+        display: 'flex',
+        position: 'relative',
+        width: '70%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        paddingVertical: 17,
+
+    },
+    
+    userItemText: {
+        fontSize: 16.5,
+        color: COLORS.primary,    
+    },
+    userItemTextNoValue: {
+        fontSize: 16.5,
+        color: COLORS.grey,    
+    },
+    
+    arrowItem: {
+        fontSize: 17, 
+        color: COLORS.primary,
+        position: 'absolute',
+        right: 14,
+    }
+    
 
 })
